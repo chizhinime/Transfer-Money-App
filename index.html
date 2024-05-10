@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Transfer Money App</title>
+    <title>Money Transfer App</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -130,22 +130,36 @@
         }
 
         function transferMoney() {
-            let receiverAccountNumber = prompt("Enter receiver's account number");
-            let receiverBank = getReceiverBank();
-            let amount = prompt("Enter transfer amount");
-            let confirm = prompt("Are you sure you want to transfer NGN" + amount + " to" + "\n Account number: " + receiverAccountNumber + " \n Bank Name: " + receiverBank + "\n (yes/no)?");
-            if (confirm.toLowerCase() === "yes") {
-                if (parseInt(amount) <= myCard.balance) {
-                    myCard.balance -= parseInt(amount);
-                    updateTransactionHistory("Transfer", parseInt(amount), receiverAccountNumber);
-                    alert("Transfer successful. Your new balance is NGN" + myCard.balance);
-                } else {
-                    alert("Insufficient balance");
-                }
-            } else {
-                alert("Transfer canceled");
-            }
+    let receiverAccountNumber = prompt("Enter receiver's account number");
+    if (receiverAccountNumber === null) {
+        alert("Transfer canceled");
+        return;
+    }
+    let receiverBank = getReceiverBank();
+    let amount = prompt("Enter transfer amount");
+    if (amount === null) {
+        alert("Transfer canceled");
+        return;
+    }
+    let confirm = prompt("Are you sure you want to transfer NGN" + amount + " to account number " + receiverAccountNumber + " at " + receiverBank + "? (yes/no)");
+    if (confirm === null) {
+        alert("Transfer canceled");
+        return;
+    }
+    if (confirm.toLowerCase() === "yes") {
+        if (parseInt(amount) <= myCard.balance) {
+            myCard.balance -= parseInt(amount);
+            updateTransactionHistory("Transfer", parseInt(amount), receiverAccountNumber);
+            alert("Transfer successful. Your new balance is NGN" + myCard.balance);
+        } else {
+            alert("Insufficient balance");
         }
+    } else {
+        alert("Transfer canceled");
+    }
+}
+
+
 
         function getReceiverBank() {
             let bankChoice = prompt("Select receiver's bank:\n1. Access\n2. UBA\n3. GTB");
@@ -166,29 +180,41 @@
         }
 
         function changePin() {
-            let oldPin = prompt("Enter your current PIN");
-            if (parseInt(oldPin) === myCard.pin) {
-                let newPin = prompt("Enter your new PIN");
-                let confirmNewPin = prompt("Confirm your new PIN");
-                if (newPin === confirmNewPin) {
-                    myCard.pin = parseInt(newPin);
-                    alert("PIN changed successfully");
-                } else {
-                    alert("New PINs do not match");
-                }
-            } else {
-                alert("Incorrect PIN");
-            }
+    let oldPin = prompt("Enter your current PIN");
+    if (oldPin === null) {
+        alert("PIN change canceled");
+        return;
+    }
+    if (parseInt(oldPin) === myCard.pin) {
+        let newPin = prompt("Enter your new PIN");
+        if (newPin === null) {
+            alert("PIN change canceled");
+            return;
         }
+        let confirmNewPin = prompt("Confirm your new PIN");
+        if (confirmNewPin === null) {
+            alert("PIN change canceled");
+            return;
+        }
+        if (newPin === confirmNewPin) {
+            myCard.pin = parseInt(newPin);
+            alert("PIN changed successfully");
+        } else {
+            alert("New PINs do not match");
+        }
+    } else {
+        alert("Incorrect PIN");
+    }
+}
 
         function depositMoney() {
             let amount = prompt("Enter deposit amount");
             if (amount && !isNaN(amount) && parseInt(amount) > 0) {
-                let confirm = prompt("Are you sure you want to deposit $" + amount + " to your account? (yes/no)");
+                let confirm = prompt("Are you sure you want to deposit NGN" + amount + " to your account? (yes/no)");
                 if (confirm.toLowerCase() === "yes") {
                     myCard.balance += parseInt(amount);
                     updateTransactionHistory("Deposit", parseInt(amount), "")
-                    alert("Deposit successful. Your new balance is $" + myCard.balance);
+                    alert("Deposit successful. Your new balance is NGN" + myCard.balance);
                 } else {
                     alert("Deposit canceled");
                 }
