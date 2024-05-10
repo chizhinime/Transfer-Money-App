@@ -1,217 +1,244 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Transfer Money App</title>
-<style>
-    body {
-        font-family: Arial, sans-serif;
-        background-color: #f4f4f4;
-        margin: 0;
-        padding: 20px;
-    }
+    <title>Transfer Money App</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        .container {
+            max-width: 600px;
+            margin: 50px auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+        }
+        button {
+            display: block;
+            margin: 20px auto;
+            padding: 10px 20px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            background-color: #007bff;
+            color: #fff;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        input[type="submit"] {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            background-color: #007bff;
+            color: #fff;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        input[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+    </style>
 
-    button {
-        background-color: #419e44;
-        border: none;
-        color: white;
-        padding: 10px 20px;
-        text-align: center;
-        text-decoration: none;
-        display: inline-block;
-        font-size: 16px;
-        margin: 10px;
-        cursor: pointer;
-        border-radius: 5px;
-    }
+    <script type="text/javascript">
+        let myCard = {
+            name: "Chizhinime Chijioke",
+            accountNumber: "0000555522",
+            balance: 100000,
+            pin: 2222,
+            bank: "Access Bank",
+            transactionHistory: []
+        };
 
-    button:hover {
-        background-color: #45a049;
-    }
+        function insertCard() {
+            let inserted = prompt("Please insert your card by typing 'yes'");
+            if (inserted.toLowerCase() === "yes") {
+                enterPin();
+            } else {
+                alert("Card not inserted");
+            }
+        }
 
-    .container {
-        max-width: 600px;
-        margin: 0 auto;
-        background-color: #fff;
-        padding: 20px;
-        border-radius: 10px;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    }
+        function enterPin() {
+            let pin = prompt("Please enter your PIN");
+            if (parseInt(pin) === myCard.pin) {
+                showTransactionOptions();
+            } else {
+                alert("Incorrect PIN");
+            }
+        }
 
-    h1 {
-        text-align: center;
-    }
+        function showTransactionOptions() {
+            let options = "Choose transaction type:\n";
+            options += "1. Transfer\n";
+            options += "2. Deposit\n";
+            options += "3. Check Balance\n";
+            options += "4. Change PIN\n";
+            options += "5. View Transaction History\n";
+            options += "6. View Account Information\n";
+            options += "7. Log Out";
+            let choice = prompt(options);
+            handleTransactionChoice(choice);
+        }
 
-    table {
-        width: 100%;
-        border-collapse: collapse;
-        margin-top: 20px;
-    }
+        function handleTransactionChoice(choice) {
+            switch (choice) {
+                case "1":
+                    transferMoney();
+                    break;
+                case "2":
+                    depositMoney();
+                    break;
+                case "3":
+                    checkBalance();
+                    break;
+                case "4":
+                    changePin();
+                    break;
+                case "5":
+                    viewTransactionHistory();
+                    break;
+                case "6":
+                    viewAccountInfo();
+                    break;
+                case "7":
+                    logOut();
+                    break;
+                default:
+                    alert("Invalid choice");
+            }
+        }
 
-    th, td {
-        border: 1px solid #ddd;
-        padding: 8px;
-        text-align: left;
-    }
+        function transferMoney() {
+            let receiverAccountNumber = prompt("Enter receiver's account number");
+            let receiverBank = getReceiverBank();
+            let amount = prompt("Enter transfer amount");
+            let confirm = prompt("Are you sure you want to transfer NGN" + amount + " to" + "\n Account number: " + receiverAccountNumber + " \n Bank Name  " + receiverBank + "\n (yes/no)?");
+            if (confirm.toLowerCase() === "yes") {
+                if (parseInt(amount) <= myCard.balance) {
+                    myCard.balance -= parseInt(amount);
+                    updateTransactionHistory("Transfer", parseInt(amount), receiverAccountNumber);
+                    alert("Transfer successful. Your new balance is NGN" + myCard.balance);
+                } else {
+                    alert("Insufficient balance");
+                }
+            } else {
+                alert("Transfer canceled");
+            }
+        }
 
-    th {
-        background-color: #f2f2f2;
-    }
+        function getReceiverBank() {
+            let bankChoice = prompt("Select receiver's bank:\n1. Access\n2. UBA\n3. GTB");
+            switch (bankChoice) {
+                case "1":
+                    return "Access Bank";
+                case "2":
+                    return "UBA";
+                case "3":
+                    return "GTB";
+                default:
+                    return "Unknown Bank";
+            }
+        }
 
-    .transaction-details {
-        margin-top: 20px;
-    }
+        function checkBalance() {
+            alert("Your current balance is NGN" + myCard.balance);
+        }
 
-    .transaction-details p {
-        margin-bottom: 5px;
-    }
-</style>
+        function changePin() {
+            let oldPin = prompt("Enter your current PIN");
+            if (parseInt(oldPin) === myCard.pin) {
+                let newPin = prompt("Enter your new PIN");
+                let confirmNewPin = prompt("Confirm your new PIN");
+                if (newPin === confirmNewPin) {
+                    myCard.pin = parseInt(newPin);
+                    alert("PIN changed successfully");
+                } else {
+                    alert("New PINs do not match");
+                }
+            } else {
+                alert("Incorrect PIN");
+            }
+        }
+
+        function depositMoney() {
+            let amount = prompt("Enter deposit amount");
+            if (amount && !isNaN(amount) && parseInt(amount) > 0) {
+                let confirm = prompt("Are you sure you want to deposit $" + amount + " to your account? (yes/no)");
+                if (confirm.toLowerCase() === "yes") {
+                    myCard.balance += parseInt(amount);
+                    updateTransactionHistory("Deposit", parseInt(amount), "")
+                    alert("Deposit successful. Your new balance is $" + myCard.balance);
+                } else {
+                    alert("Deposit canceled");
+                }
+            } else {
+                alert("Invalid amount");
+            }
+        }
+
+
+        function viewTransactionHistory() {
+            if (myCard.transactionHistory.length === 0) {
+                alert("No transactions yet");
+            } else {
+                let historyString = "Transaction History:\n";
+                myCard.transactionHistory.forEach(function(transaction) {
+                    historyString += transaction.type + " NGN" + transaction.amount;
+                    if (transaction.type === "Transfer") {
+                        historyString += " to account number " + transaction.receiverAccountNumber;
+                    }
+                    historyString += "\n";
+                });
+                alert(historyString);
+            }
+        }
+
+        function updateTransactionHistory(type, amount, receiverAccountNumber) {
+            let transaction = {
+                type: type,
+                amount: amount,
+                receiverAccountNumber: receiverAccountNumber
+            };
+            myCard.transactionHistory.push(transaction);
+        }
+
+        function viewAccountInfo() {
+            let info = "Account Information:\n";
+            info += "Name: " + myCard.name + "\n";
+            info += "Account Number: " + myCard.accountNumber + "\n";
+            info += "Bank: " + myCard.bank + "\n";
+            info += "Balance: NGN" + myCard.balance + "\n";
+            alert(info);
+        }
+
+        function logOut() {
+            alert("Logged out successfully");
+        }
+    </script>
 </head>
 <body>
-
-<div class="container">
-    <h1>Transfer Money App</h1>
-
-    <button onclick="depositMoney()">Deposit Money</button>
-    <button onclick="transferMoney()">Transfer Money</button>
-    <button onclick="resetBalance()">Reset Balance</button>
-
-    <div class="transaction-details" id="transactionDetails" style="display: none;">
-        <h2>Transaction Details</h2>
-        <table>
-            <tr>
-                <th>Item</th>
-                <th>Details</th>
-            </tr>
-            <tr>
-                <td>Amount Transferred</td>
-                <td id="transferredAmount"></td>
-            </tr>
-            <tr>
-                <td>Recipient's Account Number</td>
-                <td id="recipientAccountNumber"></td>
-            </tr>
-            <tr>
-                <td>Recipient's Bank</td>
-                <td id="recipientBank"></td>
-            </tr>
-            <tr>
-                <td>Remaining Balance</td>
-                <td id="remainingBalance"></td>
-            </tr>
-        </table>
-    </div>
-</div>
-
-<script>
-
-var currentBalance = 1000;
-
-function generateAccountNumber() {
-    var accountNumber = "";
-    for (var i = 0; i < 10; i++) {
-        accountNumber += Math.floor(Math.random() * 10);
-    }
-    return accountNumber;
-}
-
-// List of recipient's banks
-var recipientBanks = ["Access Bank", "EcoBank Mobile", "FirstBank", "UBA"];
-
-// Default PIN for confirmation
-var defaultPin = "1234";
-
-function displayBalance() {
-    alert("Your current balance is: N" + formatCurrency(currentBalance));
-}
-
-function depositMoney() {
-    var depositAmount = parseFloat(prompt("Enter the amount to deposit:"));
-    if (isNaN(depositAmount) || depositAmount <= 0) {
-        alert("Invalid amount entered.");
-        return;
-    }
-
-    currentBalance += depositAmount;
-    alert("Deposit of N" + formatCurrency(depositAmount) + " successful!\nNew balance: N" + formatCurrency(currentBalance));
-}
-
-function resetBalance() {
-    currentBalance = 1000; // Reset balance to default
-    alert("Balance reset to N" + formatCurrency(currentBalance));
-}
-
-function transferMoney() {
-    // Step 1: Display current balance
-    displayBalance();
-
-    // Step 2: Prompt user to enter the amount to transfer
-    var amount = parseFloat(prompt("Enter the amount to transfer:"));
-    if (isNaN(amount) || amount <= 0) {
-        alert("Invalid amount entered.");
-        return;
-    }
-
-    if (amount > currentBalance) {
-        alert("Insufficient funds.");
-        return;
-    }
-
-    // Step 3: Generate 10-digit account number
-    var accountNumber = generateAccountNumber();
-
-    // Step 4: Select recipient's bank
-    var bankIndex = prompt("Select the recipient's bank:\n" + recipientBanks.join("\n"));
-    if (!validateBankIndex(bankIndex)) {
-        alert("Transfer cancelled or invalid bank selected.");
-        return;
-    }
-
-    var bank = recipientBanks[parseInt(bankIndex)];
-
-    // Step 5: Enter PIN for confirmation
-    var pin = prompt("Enter your PIN for confirmation (default PIN is 1234):");
-    if (!validatePIN(pin)) {
-        alert("Transfer cancelled.");
-        return;
-    }
-
-    // Step 6: Confirm the transfer
-    var confirmed = confirm("Transfer of N" + formatCurrency(amount) + " to account number " + accountNumber + " at " + bank + " confirmed. Do you want to proceed?");
-    if (confirmed) {
-        currentBalance -= amount; // Deduct transferred amount from balance
-        alert("Transfer successful!\nNew balance: N" + formatCurrency(currentBalance));
-
-        // Step 7: Display transaction details
-        displayTransactionDetails(amount, accountNumber, bank);
-    } else {
-        alert("Transfer cancelled.");
-    }
-}
-
-function validateBankIndex(index) {
-    return index !== null && index !== "" && !isNaN(parseInt(index)) && parseInt(index) >= 0 && parseInt(index) < recipientBanks.length;
-}
-
-function validatePIN(pin) {
-    return pin !== null && pin === defaultPin;
-}
-
-function formatCurrency(amount) {
-    return amount.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
-}
-
-function displayTransactionDetails(amount, accountNumber, bank) {
-    var details = document.getElementById("transactionDetails");
-    details.style.display = "block";
-
-    document.getElementById("transferredAmount").innerText = "N" + formatCurrency(amount);
-    document.getElementById("recipientAccountNumber").innerText = accountNumber;
-    document.getElementById("recipientBank").innerText = bank;
-    document.getElementById("remainingBalance").innerText = "N" + formatCurrency(currentBalance);
-}
-</script>
-
+    <h1>Welcome to Money Transfer App</h1>
+    <button onclick="insertCard()">Insert Card</button>
 </body>
 </html>
