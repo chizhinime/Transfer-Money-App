@@ -133,7 +133,7 @@
             let receiverAccountNumber = prompt("Enter receiver's account number");
             let receiverBank = getReceiverBank();
             let amount = prompt("Enter transfer amount");
-            let confirm = prompt("Are you sure you want to transfer NGN" + amount + " to" + "\n Account number: " + receiverAccountNumber + " \n Bank Name  " + receiverBank + "\n (yes/no)?");
+            let confirm = prompt("Are you sure you want to transfer NGN" + amount + " to" + "\n Account number: " + receiverAccountNumber + " \n Bank Name: " + receiverBank + "\n (yes/no)?");
             if (confirm.toLowerCase() === "yes") {
                 if (parseInt(amount) <= myCard.balance) {
                     myCard.balance -= parseInt(amount);
