@@ -129,28 +129,37 @@
             }
         }
 
-        function transferMoney() {
+        function confirmDetails(receiverName, receiverAccountNumber, receiverBank, amount) {
+    let confirm = prompt(`Receiver Name: ${receiverName}\nReceiver Account Number: ${receiverAccountNumber}\nReceiver Bank: ${receiverBank}\nTransfer Amount: NGN ${amount}\n\nAre you sure you want to transfer? (yes/no)`);
+    if (confirm === null) {
+        alert("Transfer canceled");
+        return false;
+    }
+    return confirm.toLowerCase() === "yes";
+}
+
+function transferMoney() {
+    let receiverName = "Chijioke Mekelachi";
     let receiverAccountNumber = prompt("Enter receiver's account number");
     if (receiverAccountNumber === null) {
         alert("Transfer canceled");
         return;
     }
     let receiverBank = getReceiverBank();
+    if (receiverBank === null) {
+        alert("Transfer canceled");
+        return;
+    }
     let amount = prompt("Enter transfer amount");
     if (amount === null) {
         alert("Transfer canceled");
         return;
     }
-    let confirm = prompt("Are you sure you want to transfer NGN" + amount + " to account number " + receiverAccountNumber + " at " + receiverBank + "? (yes/no)");
-    if (confirm === null) {
-        alert("Transfer canceled");
-        return;
-    }
-    if (confirm.toLowerCase() === "yes") {
+    if (confirmDetails(receiverName, receiverAccountNumber, receiverBank, amount)) {
         if (parseInt(amount) <= myCard.balance) {
             myCard.balance -= parseInt(amount);
             updateTransactionHistory("Transfer", parseInt(amount), receiverAccountNumber);
-            alert("Transfer successful. Your new balance is NGN" + myCard.balance);
+            alert("Transfer successful. Your new balance is NGN " + myCard.balance);
         } else {
             alert("Insufficient balance");
         }
@@ -158,9 +167,6 @@
         alert("Transfer canceled");
     }
 }
-
-
-
         function getReceiverBank() {
             let bankChoice = prompt("Select receiver's bank:\n1. Access\n2. UBA\n3. GTB");
             switch (bankChoice) {
@@ -176,7 +182,7 @@
         }
 
         function checkBalance() {
-            alert("Your current balance is NGN" + myCard.balance);
+            alert("Your current balance is NGN " + myCard.balance);
         }
 
         function changePin() {
@@ -210,11 +216,11 @@
         function depositMoney() {
             let amount = prompt("Enter deposit amount");
             if (amount && !isNaN(amount) && parseInt(amount) > 0) {
-                let confirm = prompt("Are you sure you want to deposit NGN" + amount + " to your account? (yes/no)");
+                let confirm = prompt("Are you sure you want to deposit NGN " + amount + " to your account? (yes/no)");
                 if (confirm.toLowerCase() === "yes") {
                     myCard.balance += parseInt(amount);
                     updateTransactionHistory("Deposit", parseInt(amount), "")
-                    alert("Deposit successful. Your new balance is NGN" + myCard.balance);
+                    alert("Deposit successful. Your new balance is NGN " + myCard.balance);
                 } else {
                     alert("Deposit canceled");
                 }
@@ -230,7 +236,7 @@
             } else {
                 let historyString = "Transaction History:\n";
                 myCard.transactionHistory.forEach(function(transaction) {
-                    historyString += transaction.type + " NGN" + transaction.amount;
+                    historyString += transaction.type + " NGN " + transaction.amount;
                     if (transaction.type === "Transfer") {
                         historyString += " to account number " + transaction.receiverAccountNumber;
                     }
@@ -254,7 +260,7 @@
             info += "Name: " + myCard.name + "\n";
             info += "Account Number: " + myCard.accountNumber + "\n";
             info += "Bank: " + myCard.bank + "\n";
-            info += "Balance: NGN" + myCard.balance + "\n";
+            info += "Balance: NGN " + myCard.balance + "\n";
             alert(info);
         }
 
